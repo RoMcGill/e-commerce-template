@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- container left -->
+<div class="container-fluid outline-div">
+  <!-- row -->
+  <div class="row outline-div">
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center res-div about outline-div"
+      style="background-color: #ff90e8; padding-bottom: 200px;  z-index: 99;">
+      <h2 class="font-weight-bold text-center" style="padding-bottom: 50px;">Brands That are selling on H2R</h2>
+      <!-- col -->
+      <!-- carousel -->
+      <div id="caro" class="carousel slide col outline-div" data-ride="carousel" data-interval="5000">
+        <article class="carousel-inner">
+          <div class="carousel-item active">
+            <h1>CasperCO</h1>
+            <p>CasperCO
+              All Natural Lip Balm
+              Designed and Handmade in Ireland
+              Zero Plastic - Planting Seeds for Change</p>
+          </div>
+          <div class="carousel-item">
+            <h1>MODMO.io</h1>
+            <p>MODMO was founded in March 2020 by Jack O’Sullivan, a then 23yr old Irishman with a vision to make the
+              bike that would replace your car.
+            </p>
+          </div>
+          <div class="carousel-item">
+            <h1>RebekaKahn</h1>
+            <p>Rebeka Kahn ART Bespoke Irish Art, created using a unique fusion of ceramic, glass & inspiration.
+              Every work of art has a story and this one is no different..</p>
+          </div>
+        </article>
+      </div>
+      <!-- image below carousel -->
+      <div class="outline-div"><img class="pop-image-2 " src="{% static 'images/selling.png' %}" alt="graphic of online retail"></div>
+    </div>
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center res-div outline-div about"
+      style="background-color: #ffc900; padding-bottom: 200px;">
+      <h2 class="font-weight-bold content">Start your first </h2>
+      <h2 class="font-weight-bold content">online store Toaday!</h2>
+      <p class="content">Its easy To create your brand and upload your products through our simple to follow forms.</p>
+      <!-- button -->
+     <a href="{% url 'brand-upload' %}" class="button-31">Sell to a Retailer</a>
+    </div>
+  </div>
+</div>
+
+<!-- container right -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- col -->
+    <div class="col col-sm-12 col-md-12 text-center text-white" style="background-color: rgb(0, 0, 0); z-index: 1000;">
+      <p class="text-center w-responsive banner">Home To Retail is designed to <strong> maximise sales for small
+          bussinesses</strong> and Provide <strong>quality products for big retailers.</strong></p>
+    </div>
+  </div>
+  <div class="row">
+    <!-- col -->
+    <div class="col col-sm-12 col-md-12 text-center "
+      style=" background-color: #ff90e8; padding-bottom: 50px; padding-top:50px; font-size: 2rem;">
+      <!-- show list of brands -->
+      {% for brand in brands %}
+      {% if brand.image %}
+      <div class="card-deck outline-div col-lg-6"
+        style="max-width: 80%; padding-top: 150px; background-color: #ffc900; margin: 0 auto;">
+        <div class="card outline-div-2">
+          <a href="{% url 'brand_detail' brand.id %}">
+            <img class="card-img-top" src="{{ brand.image.url }}" alt="{{ brand.name }}"
+              style="height: 200px; max-width:200px;">
+          </a>
+          <!-- if no brand image -->
+          {% else %}
+          <a href="{% url 'brand_detail' brand.id %}">
+            <img class="card-img-top" src="{{ MEDIA_URL }}noimage.png" alt="{{ brand.name }}">
+          </a>
+          {% endif %}
+          <!-- brand info -->
+          <a href="{% url 'brand_detail' brand.id %}">
+            <h5 class="card-title">{{ brand.brand_name }}</h5>
+          </a>
+          <!-- show brand discriptions -->
+          {% if brand.description %}
+          <p class="card-text">{{ brand.description }}
+            <!-- if no discription -->
+            {% else %}
+            <p class="card-text">No description</p>
+            {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- container -->
+<div class="container-fluid outline-div">
+  <div class="row outline-div" style="background-color: red;">
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center outline-div" style="background-color: #000000; padding-bottom: 50px;">
+      <h2 class="font-weight-bold text-center outline-div" style="color: white; font-size: 3rem;"><a
+          href="{% url 'brand-upload' %}">Create A Brand</a></h2>
+      <p class="text-right no-sm" style="color: white; font-size: 3rem;">It's That</p>
+      <p style="padding-top: 30px; font-size: 3rem; color: #ffc900;">By filling out Our easy to use and easy to
+        undestand forms!</p>
+    </div>
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center outline-div" style="background-color: #ffc900;">
+      <h2 class="font-weight-bold text-center" style="font-size: 3rem;"><a href="{% url 'brand-upload' %}">Create A
+          Product</a></h2>
+      <p class="text-left no-sm" style="font-size: 3rem;">Simple</p>
+      <img class="form" src="{% static 'images/form.png' %}" alt="image of a form Icon">
+    </div>
+  </div>
+</div>
+<!-- container -->
+<div class="container-fluid outline-div">
+  <div class="row" style="background-color: red;">
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center" style="background-color: #ff90e8; padding-bottom: 400px;">
+      <h2>Why?</h2>
+      <p>DIY'rs, Crafters, Painters, Artists Always have trouble when it comes to maximising Sales and revenue due to Not taking advantage of B2B (business to businees) Sales, This could be for a number of reasons. The main two are not taking advantage of technology arround them such as shopify and wixx this is down to the High barrier to entry when creating, maintaining and running your own website on one of theese platforms. the Next reason is just not knowing where to start and who to contact. We have solved both of these Issues.
+      </p>
+    </div>
+    <!-- col -->
+    <div class="col col-sm-6 col-md-6 text-center outline-div" style="background-color: #ffc900;">
+      <h2>How?</h2>
+      <p>We have solved these issues Firstly by making it easyer than ever to set up your online store front and start selling.We do this by giving our users a simple form and image field to fill out, Once complete our site will automatically build your store front and be available on our site for everyone to see, adding products to your store is done the same way, and will display and be available to purchase in your store. Secondly We will find your Wholesale customers ready to make big orders to stock their shelfs, We do this by giving Wholesalers an easy place to go and purchase products in bulk Hassle free.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

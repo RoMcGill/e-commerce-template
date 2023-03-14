@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- if cart has items in it  -->
+{% if cart_items %}
+<!-- container -->
+
+<div class="container">
+    <!-- display cart headers -->
+
+
+    <div class="row" style=" padding-top: 10px;">
+        <div class="col">
+            <h1 class="cart-titles">Shopping Cart</h1>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="col">
+            <h4 class="cart-titles outline-div res-title"><b>image</b></h4>
+        </div>
+        <div class="col">
+            <h4 class="cart-titles outline-div res-title"><b>name</b></h4>
+        </div>
+        <div class="col">
+            <h4 class="cart-titles outline-div res-title"><b>Price</b></h4>
+        </div>
+        <div class="col">
+            <h4 class="cart-titles outline-div res-title"><b>Qty</b></h4>
+        </div>
+        <div class="col">
+            <h4 class="cart-titles outline-div res-title"><b>Total</b></h4>
+        </div>
+        <!-- lsit cart items -->
+        {% for item in cart_items%}
+<br>
+    </div>
+    <div class=" border-top border-bottom outline-div-3">
+        <div class="row main align-items-center">
+            <div class="col " class="cart-titles"><img class="img-fluid" src="{{ item.product.image.url }}" alt="image of product"></div>
+            <div class="col text-bold">{{ item.product.brand_name }}
+                <div class="col text-bold">{{ item.product.product_name }}</div>
+            </div>
+            <div class="col text-bold">{{ item.product.price }}</div>
+            <div class="col align-items-center "><p class="align-items-center cart-titles-2">Qty = {{ item.quantity }}</p>
+            <div class="col">
+                <form class="form update-form small-form row main align-items-center" method="POST" action="{% url 'adjust_cart' item.item_id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button class="decrement-qty btn btn-sm btn-black rounded-0"aria-label="minus button"
+                                    data-item_id="{{ item.item_id }}" id="decrement-qty_{{ item.item_id }}" aria-label="minus button">
+                                    <span>
+                                        <i class="fas fa-minus fa-sm" aria-label="minus button"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- quantity -->
+                            <input class="form-control form-control-sm qty_input" type="number" name="quantity"
+                                value="{{ item.quantity }}" min="0" max="99" data-item_id="{{ item.item_id }}"
+                                id="id_qty_{{ item.item_id }}"aria-label="quantity selection">
+                            <div class="input-group-append">
+                                <button class="increment-qty btn btn-sm btn-black rounded-0" aria-label="plus button"
+                                    data-item_id="{{ item.item_id }}" id="increment-qty_{{ item.item_id }}">
+                                    <span>
+                                        <i class="fas fa-plus fa-sm" aria-label="minus button"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            {% if item.product.has_sizes %}
+                            <input type="hidden" name="product_size" value="{{ item.size }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+                <a class="update-link text-info link-pointer button-32"><small>Update</small></a>
+            </div>
+            </div>
+                <div class="col">
+
+                </td>
+                <td class="py-3">
+                </td>
+                </tr>
+
+                <div class="align-items-center cart-titles">{{ item.total }}</div>
+
+
+            </div>
+
+        </div>
+        <br>
+</div>
+        <div class="row" style="padding-bottom: 100px; padding-top: 100px;">
+            {% endfor %}
+
+            <!-- if cart is empty -->
+            {% else %}
+            <div class="container" style="margin-left: 120px; margin-right: 20px;">
+                <div class="row">
+                    <div class="col">
+                        <h1>Shopping Cart Empty</h1>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <!-- display cart total amount + shipping threshold -->
+            {% if grand_total %}
+            <div class="col">
+                <form>
+                    <h5 class="cart-titles"><b>Shipping</b></h5>
+                    <select>
+                        <option class="text-muted">Standard-Delivery- &euro;5.00</option>
+                    </select>
+                    <p>Free delivery on orders over €{{ free_delivery_threshold }}</p>
+                    <p class="cart-titles">Spend €{{ free_delivery_delta }} More for free delivery!</p>
+                    <p>Enter Your Discount Code Here!</p>
+                    <input id="code" placeholder="Enter your code">
+                </form>
+            </div>
+            <div class="col">
+                <h5 class="cart-titles"><b>Summary</b></h5>
+                <div>Total Qty: {{product_count}}</div>
+                <div>Total Price: €{{ grand_total|floatformat:2 }}</div>
+            </div>
+            <div class="col">
+                <h5 class=""><b>Checkout with Stripe</b></h5>
+                <a href="{% url 'checkout' %}" class="button-32">
+                    <span>Secure Checkout</span>
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <ul class="main-btns">
+            <li>
+                <p><a href="{% url 'brands' %}" class="btn1 btn shadow-lg btn-round btn-lg d-flex center"
+                        style="border-radius: 10px;">Add items to your Cart!</a></p>
+            </li>
+        </ul>
+            {% endif %}
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+{% include 'brands/includes/qty-input-script.html' %}
+<script>
+    // Update quantity on click
+    $('.update-link').click(function (e) {
+        var form = $(this).prev('.update-form');
+        form.submit();
+
+    })
+
+    // Remove item and reload on click
+    $('.remove-item').click(function (e) {
+        var csrfToken = "{{ csrf_token }}";
+        var itemId = $(this).attr('id').split('remove_')[1];
+        var url = `/cart/remove/${itemId}/`;
+
+        $.post(url)
+            .done(function () {
+                location.reload();
+
+            });
+    })
+</script>
+{% endblock %}
